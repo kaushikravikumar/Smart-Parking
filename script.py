@@ -40,5 +40,4 @@ def get_location():
 
 
 if __name__ == '__main__':
-    setup_sensor()
     threading.Timer(1.0, get_location).start()
