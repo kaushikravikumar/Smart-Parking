@@ -1,9 +1,18 @@
 import RPi.GPIO as GPIO
 import time
 import logging
+import sys
+import signal
 
 TRIG = 23
 ECHO = 24
+
+def close(signal, frame):
+	print("\nTurning off ultrasonic distance detection...\n")
+	GPIO.cleanup()
+	sys.exit(0)
+
+signal.signal(signal.SIGINT, close)
 
 def setup_sensor():
 
@@ -43,10 +52,6 @@ def get_location():
 
 if __name__ == '__main__':
     setup_sensor()
-    try:
-        while True:
-            logging.warning('called')
-            get_location()
-    # Stop on Cmd+C and clean up
-    except KeyboardInterrupt:
-        GPIO.cleanup()
+    while True:
+        logging.warning('called')
+        get_location()
