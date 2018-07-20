@@ -1,11 +1,14 @@
 import RPi.GPIO as GPIO
 import time
-import logging
-import sys
 import signal
+import sys
 
-TRIG = 23
-ECHO = 24
+# use Raspberry Pi board pin numbers
+GPIO.setmode(GPIO.BCM)
+
+# set GPIO Pins
+pinTrigger = 23
+pinEcho = 24
 
 def close(signal, frame):
 	print("\nTurning off ultrasonic distance detection...\n")
@@ -14,30 +17,26 @@ def close(signal, frame):
 
 signal.signal(signal.SIGINT, close)
 
-def setup_sensor():
+# set GPIO input and output channels
+GPIO.setup(pinTrigger, GPIO.OUT)
+GPIO.setup(pinEcho, GPIO.IN)
 
-    GPIO.setmode(GPIO.BCM)
+while True:
+	# set Trigger to HIGH
+	GPIO.output(pinTrigger, True)
+	# set Trigger after 0.01ms to LOW
+	time.sleep(0.00001)
+	GPIO.output(pinTrigger, False)
 
-    print "Distance Measurement In Progress"
-
-    GPIO.setup(TRIG, GPIO.OUT)
-    GPIO.setup(ECHO, GPIO.IN)
-
-def get_location():
-
-    GPIO.output(TRIG, True)
-    time.sleep(0.00001)
-    GPIO.output(TRIG, False)
-
-    startTime = time.time()
+	startTime = time.time()
 	stopTime = time.time()
 
 	# save start time
-	while 0 == GPIO.input(ECHO):
+	while 0 == GPIO.input(pinEcho):
 		startTime = time.time()
 
 	# save time of arrival
-	while 1 == GPIO.input(ECHO):
+	while 1 == GPIO.input(pinEcho):
 		stopTime = time.time()
 
 	# time difference between start and arrival
@@ -48,10 +47,3 @@ def get_location():
 
 	print ("Distance: %.1f cm" % distance)
 	time.sleep(1)
-
-
-if __name__ == '__main__':
-    setup_sensor()
-    while True:
-        logging.warning('called')
-        get_location()
