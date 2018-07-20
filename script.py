@@ -44,6 +44,6 @@ if __name__ == '__main__':
     try:
         while True:
             get_location()
-    # Stop on Ctrl+C and clean up
+    # Stop on Cmd+C and clean up
     except KeyboardInterrupt:
         GPIO.cleanup()
