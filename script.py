@@ -1,13 +1,12 @@
 import RPi.GPIO as GPIO
 import time
-import threading
 
-def get_location():
+TRIG = 23
+ECHO = 24
 
+def setup_sensor():
+    GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
-
-    TRIG = 23
-    ECHO = 24
 
     print "Distance Measurement In Progress"
 
@@ -21,6 +20,8 @@ def get_location():
     GPIO.output(TRIG, True)
     time.sleep(0.00001)
     GPIO.output(TRIG, False)
+
+def get_location():
 
     while GPIO.input(ECHO) == 0:
         pulse_start = time.time()
@@ -36,8 +37,13 @@ def get_location():
 
     print "Distance: ", distance, "cm"
 
-    GPIO.cleanup()
 
 
 if __name__ == '__main__':
-    threading.Timer(1.0, get_location).start()
+    setup_sensor()
+    try:
+        while True:
+            get_location()
+    # Stop on Ctrl+C and clean up
+    except KeyboardInterrupt:
+        GPIO.cleanup()
