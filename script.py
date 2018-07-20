@@ -6,6 +6,7 @@ TRIG = 23
 ECHO = 24
 
 def setup_sensor():
+
     GPIO.setmode(GPIO.BCM)
 
     print "Distance Measurement In Progress"
@@ -13,30 +14,31 @@ def setup_sensor():
     GPIO.setup(TRIG, GPIO.OUT)
     GPIO.setup(ECHO, GPIO.IN)
 
-    GPIO.output(TRIG, False)
-    print "Waiting for sensor to settle"
-    time.sleep(2)
+def get_location():
 
     GPIO.output(TRIG, True)
     time.sleep(0.00001)
     GPIO.output(TRIG, False)
 
-def get_location():
+    startTime = time.time()
+	stopTime = time.time()
 
-    while GPIO.input(ECHO) == 0:
-        pulse_start = time.time()
+	# save start time
+	while 0 == GPIO.input(ECHO):
+		startTime = time.time()
 
-    while GPIO.input(ECHO) == 1:
-        pulse_end = time.time()
+	# save time of arrival
+	while 1 == GPIO.input(ECHO):
+		stopTime = time.time()
 
-    pulse_duration = pulse_end - pulse_start
+	# time difference between start and arrival
+	TimeElapsed = stopTime - startTime
+	# multiply with the sonic speed (34300 cm/s)
+	# and divide by 2, because there and back
+	distance = (TimeElapsed * 34300) / 2
 
-    distance = pulse_duration * 17150
-
-    distance = round(distance, 2)
-
-    print "Distance: ", distance, "cm"
-
+	print ("Distance: %.1f cm" % distance)
+	time.sleep(1)
 
 
 if __name__ == '__main__':
