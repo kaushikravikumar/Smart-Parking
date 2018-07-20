@@ -1,11 +1,11 @@
 import RPi.GPIO as GPIO
 import time
+import logging
 
 TRIG = 23
 ECHO = 24
 
 def setup_sensor():
-    GPIO.cleanup()
     GPIO.setmode(GPIO.BCM)
 
     print "Distance Measurement In Progress"
@@ -43,6 +43,7 @@ if __name__ == '__main__':
     setup_sensor()
     try:
         while True:
+            logging.warning('called')
             get_location()
     # Stop on Cmd+C and clean up
     except KeyboardInterrupt:
