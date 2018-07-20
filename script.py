@@ -17,11 +17,12 @@ def close(signal, frame):
 
 signal.signal(signal.SIGINT, close)
 
-# set GPIO input and output channels
-GPIO.setup(pinTrigger, GPIO.OUT)
-GPIO.setup(pinEcho, GPIO.IN)
+def setup_sensor():
+    # set GPIO input and output channels
+    GPIO.setup(pinTrigger, GPIO.OUT)
+    GPIO.setup(pinEcho, GPIO.IN)
 
-while True:
+def get_location():
 	# set Trigger to HIGH
 	GPIO.output(pinTrigger, True)
 	# set Trigger after 0.01ms to LOW
@@ -47,3 +48,8 @@ while True:
 
 	print ("Distance: %.1f cm" % distance)
 	time.sleep(1)
+
+if __name__ == '__main__':
+    setup_sensor()
+    while True:
+        get_location()
