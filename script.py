@@ -6,7 +6,7 @@ def get_location():
 
     GPIO.setmode(GPIO.BCM)
 
-    RIG = 23
+    TRIG = 23
     ECHO = 24
 
     print "Distance Measurement In Progress"
