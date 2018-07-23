@@ -61,7 +61,6 @@ if __name__ == '__main__':
 	setup_sensor()
 	while True:
 		if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
-			print('ENTERS IF')
 			try:
 				occupied = not occupied
 				pubnub.publish().channel("parking_spot").message({
