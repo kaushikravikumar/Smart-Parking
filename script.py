@@ -22,9 +22,9 @@ def close(signal, frame):
 signal.signal(signal.SIGINT, close)
 
 def setup_sensor():
-    # set GPIO input and output channels
-    GPIO.setup(pinTrigger, GPIO.OUT)
-    GPIO.setup(pinEcho, GPIO.IN)
+	# set GPIO input and output channels
+	GPIO.setup(pinTrigger, GPIO.OUT)
+	GPIO.setup(pinEcho, GPIO.IN)
 
 def get_distance():
 	# set Trigger to HIGH
@@ -53,20 +53,20 @@ def get_distance():
 	return distance
 
 if __name__ == '__main__':
-    pnconfig = PNConfiguration()
-    pnconfig.publish_key = 'pub-c-559f5d98-9a8a-42e0-8a38-dfe760065056'
-    pubnub = PubNub(pnconfig)
+	pnconfig = PNConfiguration()
+	pnconfig.publish_key = 'pub-c-559f5d98-9a8a-42e0-8a38-dfe760065056'
+	pubnub = PubNub(pnconfig)
 
-    setup_sensor()
-    while True:
-        if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
+	setup_sensor()
+	while True:
+		if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
 			print('ENTERS IF')
 			try:
 				occupied = not occupied
-            	pubnub.publish().channel("parking_spot").message({
-                    'occupied': occupied
-                }).sync()
+				pubnub.publish().channel("parking_spot").message({
+					'occupied': occupied
+				}).sync()
 				print("Success publishing")
 			except PubNubException as e:
 				print("Error publishing")
-        time.sleep(5)
+		time.sleep(5)
