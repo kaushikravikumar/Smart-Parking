@@ -68,5 +68,5 @@ if __name__ == '__main__':
 				}).sync()
 				print("Success publishing")
 			except PubNubException as e:
-				print("Error publishing")
+				print(e)
 		time.sleep(5)
