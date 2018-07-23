@@ -61,12 +61,12 @@ if __name__ == '__main__':
     while True:
         if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
 			print('ENTERS IF')
-            try:
+			try:
 				occupied = not occupied
-                pubnub.publish().channel("parking_spot").message({
-                    'occupied': occupied,
-                    }).sync()
+            	pubnub.publish().channel("parking_spot").message({
+                    'occupied': occupied
+                }).sync()
 				print("Success publishing")
-            except PubNubException as e:
-                    print("Error publishing")
+			except PubNubException as e:
+				print("Error publishing")
         time.sleep(5)
