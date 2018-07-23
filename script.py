@@ -2,6 +2,9 @@ import RPi.GPIO as GPIO
 import time
 import signal
 import sys
+from pubnub.pnconfiguration import PNConfiguration
+from pubnub.pubnub import PubNub
+from pubnub.exceptions import PubNubException
 
 # use Raspberry Pi board pin numbers
 GPIO.setmode(GPIO.BCM)
@@ -9,6 +12,7 @@ GPIO.setmode(GPIO.BCM)
 # set GPIO Pins
 pinTrigger = 23
 pinEcho = 24
+occupied = True
 
 def close(signal, frame):
 	print("\nTurning off ultrasonic distance detection...\n")
@@ -22,7 +26,7 @@ def setup_sensor():
     GPIO.setup(pinTrigger, GPIO.OUT)
     GPIO.setup(pinEcho, GPIO.IN)
 
-def get_location():
+def get_distance():
 	# set Trigger to HIGH
 	GPIO.output(pinTrigger, True)
 	# set Trigger after 0.01ms to LOW
@@ -46,10 +50,22 @@ def get_location():
 	# and divide by 2, because there and back
 	distance = (TimeElapsed * 34300) / 2
 
-	print ("Distance: %.1f cm" % distance)
-	time.sleep(1)
+	return distance
 
 if __name__ == '__main__':
+    pnconfig = PNConfiguration()
+    pnconfig.publish_key = 'pub-c-559f5d98-9a8a-42e0-8a38-dfe760065056'
+    pubnub = PubNub(pnconfig)
+
     setup_sensor()
     while True:
-        get_location()
+        if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
+            try:
+				occupied = not occupied
+                pubnub.publish().channel("parking_spot").message({
+                    'occupied': occupied,
+                    }).sync()
+					print("Success publishing")
+            except PubNubException as e:
+                    print("Error publishing")
+        time.sleep(5)
