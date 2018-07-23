@@ -54,6 +54,7 @@ def get_distance():
 
 if __name__ == '__main__':
 	pnconfig = PNConfiguration()
+	pnconfig.subscribe_key = 'sub-c-e36bba74-8c65-11e8-85ee-866938e9174c'
 	pnconfig.publish_key = 'pub-c-559f5d98-9a8a-42e0-8a38-dfe760065056'
 	pubnub = PubNub(pnconfig)
 
