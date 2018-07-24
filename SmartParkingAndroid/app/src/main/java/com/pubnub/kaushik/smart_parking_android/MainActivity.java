@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
     TextView occupiedText;
 
     ImageView car, parkingSpace;
+
+    float outsideCar = 903f;
+
+    float parkedCar = 203f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,19 +84,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void carEnterAnimation()
     {
-        ObjectAnimator animation = ObjectAnimator.ofFloat(car, "translationY", parkingSpace.getY() - car.getY());
-        animation.setDuration(2000);
-        animation.start();
+        car.animate().y(parkedCar).setDuration(1500);
 
         occupiedText.setText("Occupied");
     }
 
     private void carLeaveAnimation()
     {
-        AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(MainActivity.this,
-                R.animator.car_exit_animation);
-        set.setTarget(car);
-        set.start();
+        car.animate().y(outsideCar).setDuration(1500);
 
         occupiedText.setText("Vacant");
     }
