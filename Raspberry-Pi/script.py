@@ -58,7 +58,7 @@ def initial_check():
 		pubnub.publish().channel("parking_spot").message({
 			'occupied': occupied
 		}).sync()
-		print("Success publishing")
+		print("initial publish complete")
 	except PubNubException as e:
 		print(e)
 
