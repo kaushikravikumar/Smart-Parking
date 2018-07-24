@@ -12,7 +12,7 @@ GPIO.setmode(GPIO.BCM)
 # set GPIO Pins
 pinTrigger = 23
 pinEcho = 24
-occupied = True
+occupied = False
 
 def close(signal, frame):
 	print("\nTurning off ultrasonic distance detection...\n")
@@ -52,6 +52,16 @@ def get_distance():
 
 	return distance
 
+def initial_check():
+	occupied = True if get_distance() < 5 else False
+	try:
+		pubnub.publish().channel("parking_spot").message({
+			'occupied': occupied
+		}).sync()
+		print("Success publishing")
+	except PubNubException as e:
+		print(e)
+
 if __name__ == '__main__':
 	pnconfig = PNConfiguration()
 	pnconfig.subscribe_key = 'sub-c-e36bba74-8c65-11e8-85ee-866938e9174c'
@@ -59,6 +69,7 @@ if __name__ == '__main__':
 	pubnub = PubNub(pnconfig)
 
 	setup_sensor()
+	initial_check()
 	while True:
 		if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
 			try:
