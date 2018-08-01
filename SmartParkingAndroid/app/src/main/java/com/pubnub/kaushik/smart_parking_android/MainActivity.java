@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView occupiedText;
 
-    ImageView car, parkingSpace;
+    ImageView car, parkingSpot;
 
     float outsideCar = 903f;
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         occupiedText = findViewById(R.id.occupiedText);
         car = findViewById(R.id.car);
-        parkingSpace = findViewById(R.id.parkingspace);
+        parkingSpot = findViewById(R.id.parkingspot);
 
         PNConfiguration pnConfiguration = new PNConfiguration();
         pnConfiguration.setSubscribeKey("sub-c-e36bba74-8c65-11e8-85ee-866938e9174c");
