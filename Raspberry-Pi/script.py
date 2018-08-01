@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import signal
 import sys
-from subprocess import call
+import subprocess
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 from pubnub.exceptions import PubNubException
@@ -63,7 +63,7 @@ def initial_check():
 	# except PubNubException as e:
 	# 	print(e)
 	# DO Terminal command here!
-	call(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", "Test"])
+	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", "Test"], stdout=subprocess.PIPE)
 
 if __name__ == '__main__':
 	# pnconfig = PNConfiguration()
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 		if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
 			# try:
 			occupied = not occupied
-			call(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", "Test"])
+			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", "Test"], stdout=subprocess.PIPE)
 			# 	pubnub.publish().channel("parking_spot").message({
 			# 		'occupied': occupied
 			# 	}).sync()
