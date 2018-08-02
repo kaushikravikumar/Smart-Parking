@@ -55,39 +55,20 @@ def get_distance():
 
 def initial_check():
 	status = 'occupied' if get_distance() < 7 else 'vacant'
-	# try:
-	# 	pubnub.publish().channel("parking_spot").message({
-	# 		'occupied': occupied
-	# 	}).sync()
-	# 	print("initial publish complete")
-	# except PubNubException as e:
-	# 	print(e)
-	# DO Terminal command here!
+
 	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
 	print("initial publish complete")
 
 if __name__ == '__main__':
-	# pnconfig = PNConfiguration()
-	# pnconfig.subscribe_key = 'sub-c-e36bba74-8c65-11e8-85ee-866938e9174c'
-	# pnconfig.publish_key = 'pub-c-559f5d98-9a8a-42e0-8a38-dfe760065056'
-	# pubnub = PubNub(pnconfig)
-
 	setup_sensor()
 	initial_check()
 	while True:
 		if (status == 'occupied' and (get_distance() >= 7)):
-			# try:
 			status = 'vacant'
 			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
-			print("momentary publish")
-			# 	pubnub.publish().channel("parking_spot").message({
-			# 		'occupied': occupied
-			# 	}).sync()
-			# 	print("Success publishing")
-			# except PubNubException as e:
-			# 	print(e)
+
 		elif (status == 'vacant' and (get_distance() < 7)):
 			status = 'occupied'
 			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
-			print("momentary publish")
+
 		time.sleep(5)
