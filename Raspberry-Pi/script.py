@@ -63,7 +63,7 @@ def initial_check():
 	# except PubNubException as e:
 	# 	print(e)
 	# DO Terminal command here!
-	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", "Test"], stdout=subprocess.PIPE)
+	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", occupied], stdout=subprocess.PIPE)
 	print("initial publish complete")
 
 if __name__ == '__main__':
@@ -78,7 +78,7 @@ if __name__ == '__main__':
 		if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
 			# try:
 			occupied = not occupied
-			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", "Test"], stdout=subprocess.PIPE)
+			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", occupied], stdout=subprocess.PIPE)
 			print("momentary publish")
 			# 	pubnub.publish().channel("parking_spot").message({
 			# 		'occupied': occupied
