@@ -22,9 +22,8 @@
         android:id="@+id/parkingspot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/car"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp"
         app:srcCompat="@drawable/parkingspot" />
 
     <ImageView
