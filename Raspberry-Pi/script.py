@@ -61,6 +61,7 @@ def convertToJsonString(occupied):
 def initial_check():
 	occupied = True if get_distance() < 7 else False
 	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", convertToJsonString(occupied)], stdout=subprocess.PIPE)
+	print(occupied)
 
 
 if __name__ == '__main__':
@@ -73,5 +74,6 @@ if __name__ == '__main__':
 
 			occupied = not occupied
 			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", convertToJsonString(occupied)], stdout=subprocess.PIPE)
+			print(occupied)
 
 		time.sleep(5)
