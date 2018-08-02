@@ -4,9 +4,6 @@ import signal
 import sys
 import subprocess
 import json
-from pubnub.pnconfiguration import PNConfiguration
-from pubnub.pubnub import PubNub
-from pubnub.exceptions import PubNubException
 
 # use Raspberry Pi board pin numbers
 GPIO.setmode(GPIO.BCM)
@@ -60,38 +57,21 @@ def convertToJsonString(occupied):
 	}
 	return json.dumps(dictionary_object)
 
+
 def initial_check():
 	occupied = True if get_distance() < 7 else False
-	# try:
-	# 	pubnub.publish().channel("parking_spot").message({
-	# 		'occupied': occupied
-	# 	}).sync()
-	# 	print("initial publish complete")
-	# except PubNubException as e:
-	# 	print(e)
-	# DO Terminal command here!
-
 	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", convertToJsonString(occupied)], stdout=subprocess.PIPE)
-	print("initial publish complete")
+
 
 if __name__ == '__main__':
-	# pnconfig = PNConfiguration()
-	# pnconfig.subscribe_key = 'sub-c-e36bba74-8c65-11e8-85ee-866938e9174c'
-	# pnconfig.publish_key = 'pub-c-559f5d98-9a8a-42e0-8a38-dfe760065056'
-	# pubnub = PubNub(pnconfig)
 
 	setup_sensor()
 	initial_check()
+
 	while True:
 		if (occupied and (get_distance() >= 7)) or (not occupied and (get_distance() < 7)):
-			# try:
+
 			occupied = not occupied
 			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", convertToJsonString(occupied)], stdout=subprocess.PIPE)
-			print("momentary publish")
-			# 	pubnub.publish().channel("parking_spot").message({
-			# 		'occupied': occupied
-			# 	}).sync()
-			# 	print("Success publishing")
-			# except PubNubException as e:
-			# 	print(e)
+
 		time.sleep(5)

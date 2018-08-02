@@ -56,14 +56,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void message(PubNub pubnub, PNMessageResult message) {
-                final String status = message.getMessage().getAsString();
+                final boolean occupied = message.getMessage().getAsJsonObject().get("occupied").getAsBoolean();
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        if(status.equals("occupied"))
+                        if(occupied)
                         {
                             carEnterAnimation();
                         }
-                        else if(status.equals("vacant"))
+                        else
                         {
                             carLeaveAnimation();
                         }
