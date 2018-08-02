@@ -9,8 +9,9 @@ import json
 GPIO.setmode(GPIO.BCM)
 
 # set GPIO Pins
-pinTrigger = 23
-pinEcho = 24
+TRIG = 23
+ECHO = 24
+
 occupied = False
 
 def close(signal, frame):
@@ -22,25 +23,25 @@ signal.signal(signal.SIGINT, close)
 
 def setup_sensor():
 	# set GPIO input and output channels
-	GPIO.setup(pinTrigger, GPIO.OUT)
-	GPIO.setup(pinEcho, GPIO.IN)
+	GPIO.setup(TRIG, GPIO.OUT)
+	GPIO.setup(ECHO, GPIO.IN)
 
 def get_distance():
 	# set Trigger to HIGH
-	GPIO.output(pinTrigger, True)
+	GPIO.output(TRIG, True)
 	# set Trigger after 0.01ms to LOW
 	time.sleep(0.00001)
-	GPIO.output(pinTrigger, False)
+	GPIO.output(TRIG, False)
 
 	startTime = time.time()
 	stopTime = time.time()
 
 	# save start time
-	while 0 == GPIO.input(pinEcho):
+	while 0 == GPIO.input(ECHO):
 		startTime = time.time()
 
 	# save time of arrival
-	while 1 == GPIO.input(pinEcho):
+	while 1 == GPIO.input(ECHO):
 		stopTime = time.time()
 
 	# time difference between start and arrival
