@@ -75,7 +75,7 @@ if __name__ == '__main__':
 	setup_sensor()
 	initial_check()
 	while True:
-		if (status === 'occupied' and (get_distance() >= 7)):
+		if (status == 'occupied' and (get_distance() >= 7)):
 			# try:
 			status = 'vacant'
 			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
@@ -86,7 +86,7 @@ if __name__ == '__main__':
 			# 	print("Success publishing")
 			# except PubNubException as e:
 			# 	print(e)
-		elif (status === 'vacant' and (get_distance() < 7)):
+		elif (status == 'vacant' and (get_distance() < 7)):
 			status = 'occupied'
 			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
 			print("momentary publish")
