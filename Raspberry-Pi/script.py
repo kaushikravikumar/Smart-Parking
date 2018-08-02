@@ -13,7 +13,7 @@ GPIO.setmode(GPIO.BCM)
 # set GPIO Pins
 pinTrigger = 23
 pinEcho = 24
-occupied = False
+status = 'vacant' # either 'vacant' or 'occupied'
 
 def close(signal, frame):
 	print("\nTurning off ultrasonic distance detection...\n")
@@ -54,7 +54,7 @@ def get_distance():
 	return distance
 
 def initial_check():
-	occupied = True if get_distance() < 5 else False
+	status = 'occupied' if get_distance() < 7 else 'vacant'
 	# try:
 	# 	pubnub.publish().channel("parking_spot").message({
 	# 		'occupied': occupied
@@ -63,7 +63,7 @@ def initial_check():
 	# except PubNubException as e:
 	# 	print(e)
 	# DO Terminal command here!
-	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", occupied], stdout=subprocess.PIPE)
+	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
 	print("initial publish complete")
 
 if __name__ == '__main__':
@@ -75,10 +75,10 @@ if __name__ == '__main__':
 	setup_sensor()
 	initial_check()
 	while True:
-		if (occupied and (get_distance() >= 5)) or (not occupied and (get_distance() < 5)):
+		if (status === 'occupied' and (get_distance() >= 7)):
 			# try:
-			occupied = not occupied
-			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", occupied], stdout=subprocess.PIPE)
+			status = 'vacant'
+			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
 			print("momentary publish")
 			# 	pubnub.publish().channel("parking_spot").message({
 			# 		'occupied': occupied
@@ -86,4 +86,8 @@ if __name__ == '__main__':
 			# 	print("Success publishing")
 			# except PubNubException as e:
 			# 	print(e)
+		elif (status === 'vacant' and (get_distance() < 7)):
+			status = 'occupied'
+			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
+			print("momentary publish")
 		time.sleep(5)
