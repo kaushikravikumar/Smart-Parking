@@ -3,6 +3,7 @@ import time
 import signal
 import sys
 import subprocess
+import json
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 from pubnub.exceptions import PubNubException
@@ -13,7 +14,7 @@ GPIO.setmode(GPIO.BCM)
 # set GPIO Pins
 pinTrigger = 23
 pinEcho = 24
-status = 'vacant' # either 'vacant' or 'occupied'
+occupied = False
 
 def close(signal, frame):
 	print("\nTurning off ultrasonic distance detection...\n")
@@ -53,22 +54,44 @@ def get_distance():
 
 	return distance
 
-def initial_check():
-	status = 'occupied' if get_distance() < 7 else 'vacant'
+def convertToJsonString(occupied):
+	dictionary_object = {
+		"occupied": occupied
+	}
+	return json.dumps(dictionary_object)
 
-	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
+def initial_check():
+	occupied = True if get_distance() < 7 else False
+	# try:
+	# 	pubnub.publish().channel("parking_spot").message({
+	# 		'occupied': occupied
+	# 	}).sync()
+	# 	print("initial publish complete")
+	# except PubNubException as e:
+	# 	print(e)
+	# DO Terminal command here!
+
+	subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", convertToJsonString(occupied)], stdout=subprocess.PIPE)
 	print("initial publish complete")
 
 if __name__ == '__main__':
+	# pnconfig = PNConfiguration()
+	# pnconfig.subscribe_key = 'sub-c-e36bba74-8c65-11e8-85ee-866938e9174c'
+	# pnconfig.publish_key = 'pub-c-559f5d98-9a8a-42e0-8a38-dfe760065056'
+	# pubnub = PubNub(pnconfig)
+
 	setup_sensor()
 	initial_check()
 	while True:
-		if (status == 'occupied' and (get_distance() >= 7)):
-			status = 'vacant'
-			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
-
-		elif (status == 'vacant' and (get_distance() < 7)):
-			status = 'occupied'
-			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", status], stdout=subprocess.PIPE)
-
+		if (occupied and (get_distance() >= 7)) or (not occupied and (get_distance() < 7)):
+			# try:
+			occupied = not occupied
+			subprocess.Popen(["mosquitto_pub", "-h", "beam.soracom.io", "-p", "1883", "-t", "parking_spot", "-m", convertToJsonString(occupied)], stdout=subprocess.PIPE)
+			print("momentary publish")
+			# 	pubnub.publish().channel("parking_spot").message({
+			# 		'occupied': occupied
+			# 	}).sync()
+			# 	print("Success publishing")
+			# except PubNubException as e:
+			# 	print(e)
 		time.sleep(5)
