@@ -35,4 +35,42 @@ Follow [these instructions](https://www.modmypi.com/blog/hc-sr04-ultrasonic-rang
 1. create your app in the [PubNub Admin Console](https://admin.pubnub.com/#/login) (It's free). After creating the app in the console, you will see the **publish** and **subscribe keys**, which we will need later.
 
 **Soracom Setup**
+1. Head on over to the [Soracom Admin Console](https://console.soracom.io/#/?coverage_type=g). Here you will click Register SIM and input the ICCID and PUK digits, which you can find on the back of your Soracom Air Sim Card.
+2. After registering our SIM card, you will remove the SIM chip. Then insert it into Huawei USB Stick Modem. Make sure that you have slid the SIM card all the way in, the right way facing up.
+3. In order to have your Raspberry Pi running on cellular data, you will simply plug the Huawei USB Stick Modem into the USB port of the Raspberry Pi. A solid blue light (not blinking) shows that the modem is successfully picking up 3g data. If it is blinking it means it is still attempting to connect.
+4. Install the Network Manager onto the Raspberry Pi. In your Raspberry Pi's terminal type the following:
+```
+sudo apt-get update && sudo apt-get install network-manager
+```
+5. Then to connect your USB Stick Modem to your Soracom Account you must type the following command from our Raspberry Pi terminal. Substitute <ENTER_USERNAME> and <ENTER_PASSWORD> with your respective account credentials.
+```
+sudo nmcli con add type gsm ifname "*" con-name soracom apn soracom.io user <ENTER_USERNAME> password <ENTER_PASSWORD>
+```
+6. To make this configuration go into effect, we must reboot our Raspberry Pi.
+```
+sudo reboot
+```
+7. Download Soracom's ppp route metric script and ensure that the script is run every time the USB modem is plugged in or restarted.
+```
+sudo curl -o /etc/NetworkManager/dispatcher.d/90.set_ppp_route_metric https://soracom-files.s3.amazonaws.com/handson/90.set_ppp_route_metric
+```
+```
+sudo chmod +x /etc/NetworkManager/dispatcher.d/90.set_ppp_route_metric
+```
+```
+sudo /etc/NetworkManager/dispatcher.d/90.set_ppp_route_metric ppp0 up
+```
+8. To set up MQTT connection in Soracom, add a new group called **Beam-Soracom**. Under basic settings select Soracom Beam and then add a MQTT entry point. Choose destination type as PubNub and then add your PubNub credentials, Publish and Subscribe Key. 
+9. Install Mosquitto-clients package onto Raspberry Pi with following terminal command.
+```
+sudo apt-get update && sudo apt-get install mosquitto-clients
+```
+10. Ensure that you have activated your Soracom Air Sim Card!
+**Code**
+1. Copy and paste the contents of sensor_publish.py into a new file saved in the Raspberry Pi.
+2. Import Android App source files onto Android Studio and then run app.
+3. In order to activate sensor go into directory with sensor_publish.py in Raspberry Pi terminal. Execute this command.
+```
+python sensor_publish.py
+```
 
