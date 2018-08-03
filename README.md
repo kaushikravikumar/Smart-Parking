@@ -4,7 +4,7 @@ Smart Parking Lot IoT Simulation created using [PubNub](https://www.pubnub.com/)
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=KySPa_D2ne0
 " target="_blank"><img src="http://img.youtube.com/vi/KySPa_D2ne0/0.jpg" 
-alt="Smart Parking Demo" width="240" height="180" border="10" /></a>
+alt="Smart Parking Demo" width="400" height="275" border="10" /></a>
 
 # QuickStart
 
