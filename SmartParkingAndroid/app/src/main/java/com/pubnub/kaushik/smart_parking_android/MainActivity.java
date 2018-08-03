@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
         parkingSpot = findViewById(R.id.parkingspot);
 
         PNConfiguration pnConfiguration = new PNConfiguration();
-        pnConfiguration.setSubscribeKey("sub-c-e36bba74-8c65-11e8-85ee-866938e9174c");
-        pnConfiguration.setPublishKey("pub-c-559f5d98-9a8a-42e0-8a38-dfe760065056");
+        pnConfiguration.setSubscribeKey("ENTER_SUBSCRIBE_KEY");
+        pnConfiguration.setPublishKey("ENTER_PUBLISH_KEY");
         pnConfiguration.setSecure(true);
         pubNub = new PubNub(pnConfiguration);
 
