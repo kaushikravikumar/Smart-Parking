@@ -1,6 +1,6 @@
 # Smart Parking
 
-Smart Parking Lot IoT Simulation created using [PubNub](https://www.pubnub.com/) and [Soracom](https://www.soracom.io/en/). For more details on how to create this demo, ######check out this [tutorial]().
+Smart Parking Lot IoT Simulation created using [PubNub](https://www.pubnub.com/) and [Soracom](https://www.soracom.io/en/). For more details on how to create this demo, ###### check out this [tutorial]().
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=KySPa_D2ne0
 " target="_blank"><img src="http://img.youtube.com/vi/KySPa_D2ne0/0.jpg" 
